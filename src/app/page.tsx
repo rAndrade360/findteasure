@@ -7,6 +7,7 @@ import { WaitRoom } from "./wait_room";
 import {EndedRoom} from './ended_room';
 import {Clue} from './clue';
 import {Question} from './question';
+import Loading from "./loading";
 
 export type RoomModel = {
   id: number
@@ -49,6 +50,8 @@ export default function Home() {
   const [question, setQuestion] = useState<QuestionModel | null>(null);
   const [questionOrClue, setQuestionOrClue] = useState('clue');
   const [questionAnswer, setQuestionAnswer] = useState('');
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     if (!user) {
@@ -100,6 +103,7 @@ export default function Home() {
 
   const submitUser = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
+    setLoading(true)
     const response = await fetch(`${API_URL}/users`, {
       method: "POST",
       headers: {
@@ -112,6 +116,7 @@ export default function Home() {
 
     if (response.status != 200) {
       console.log("Erro ao criar usuário");
+      alert("Erro ao criar usuário. Tente novamente mais tarde.");
       return;
     }
 
@@ -122,10 +127,12 @@ export default function Home() {
     setUser(data);
 
     console.log(userName);
+    setLoading(false)
   }
 
   const submitRoom = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
+    setLoading(true)
     const response = await fetch(`${API_URL}/rooms/${roomCode}`, {
       method: "GET",
       headers: {
@@ -149,6 +156,7 @@ export default function Home() {
 
     await linkUserRoom(user, data);
     await getRandomClue(user, data, clue);
+    setLoading(false)
   }
 
   const linkUserRoom = async (user: UserModel | null, room: RoomModel) => {
@@ -201,6 +209,7 @@ export default function Home() {
   }
 
   const submitQuestionCode = async (e: React.FormEvent<HTMLInputElement>) => {
+    setLoading(true)
     e.preventDefault();
     if (questionCode !== clue?.question_code) {
       alert("Código incorreto!")
@@ -234,10 +243,12 @@ export default function Home() {
 
 
     console.log(questionCode);
+    setLoading(false)
   }
 
   const submitQuestionResponse = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
+    setLoading(true)
     if (!room || !user || !question) {
       console.log("Erro ao responder questão");
       return;
@@ -273,12 +284,15 @@ export default function Home() {
     setQuestionAnswer('');
 
     console.log(questionAnswer);
+    setLoading(false)
     alert("Parabéns! Você acertou a resposta!")
   }
 
   let page;
 
-  if (!user) {
+  if (loading) {
+    page = <Loading />
+  } else if (!user) {
     page = <User name={userName} setName={setUserName} submitUser={submitUser} />
   } else if (!room) {
     page = <Room room={roomCode} setRoom={setRoomCode} submitRoom={submitRoom} />

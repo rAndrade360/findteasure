@@ -22,7 +22,7 @@ export const Question: React.FC<QuestionProps> = (props) => {
 
   return (
     <div className="flex gap-4 items-center flex-col sm:flex-col">
-      <H2>Responda à pergunta para continuar</H2>
+      <H2>Responda a pergunta para desbloquer a charada!</H2>
       <p>{props.question && props.question.text}</p>
       <Form value={props.answer} setValue={props.setAnswer} submitForm={props.submitQuestionResponse} />
     </div>
