@@ -250,7 +250,7 @@ export default function Home() {
         "user_id": user.id.toString(),
       },
       body: JSON.stringify({
-        answer: questionAnswer,
+        answer: questionAnswer.trim(),
       }),
     })
 
@@ -273,6 +273,7 @@ export default function Home() {
     setQuestionAnswer('');
 
     console.log(questionAnswer);
+    alert("Parabéns! Você acertou a resposta!")
   }
 
   let page;
