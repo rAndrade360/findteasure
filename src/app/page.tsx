@@ -214,6 +214,7 @@ export default function Home() {
     if (questionCode !== clue?.question_code) {
       alert("Código incorreto!")
       setQuestionCode("")
+      setLoading(false)
       return 
     }
 
@@ -226,6 +227,7 @@ export default function Home() {
 
     if (response.status != 200) {
       console.log("Erro ao buscar questão");
+      setLoading(false)
       return;
     }
 
@@ -251,6 +253,7 @@ export default function Home() {
     setLoading(true)
     if (!room || !user || !question) {
       console.log("Erro ao responder questão");
+      setLoading(false)
       return;
     }
 
@@ -266,12 +269,14 @@ export default function Home() {
     })
 
     if (response.status == 400) {
+      setLoading(false)
       alert("Resposta incorreta!")
       return
     }
 
     if (response.status != 200) {
       console.log("Erro ao responder questão", response.status);
+      setLoading(false)
       return;
     }
 
@@ -285,7 +290,6 @@ export default function Home() {
 
     console.log(questionAnswer);
     setLoading(false)
-    alert("Parabéns! Você acertou a resposta!")
   }
 
   let page;
